@@ -1,0 +1,1266 @@
+{
+  "schema_version": 18,
+  "standard_lib_version": 40,
+  "action_runtime_version": 5,
+  "name": "RoverRetriever",
+  "description": null,
+  "guid": "6169096c1f23582bc523560f0ca8a4d3",
+  "slug": "roverretriever",
+  "agents": [
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "Receive Slack Interactions",
+      "disabled": false,
+      "description": null,
+      "guid": "a4955f4675b076a36d5bd4ba43677c49",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "path": "29b2946eebc0f68aa934cf2fe17173d9",
+        "secret": "49d98ae5d87fc1e9a45bc64f52cc0656",
+        "verbs": "get,post"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "Retrieve Photo",
+      "disabled": false,
+      "description": null,
+      "guid": "fef08f75860305d91abfc2c4a1d16626",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "path": "7e9a515946037f26272009397e43894e",
+        "secret": "213143e8d208426a25f789d117c8ab12",
+        "verbs": "get,post",
+        "response": ""
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Get Photo",
+      "disabled": false,
+      "description": null,
+      "guid": "b1b62956b9d30854c63b02e70620b92e",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "url": "<<build_url.url>>",
+        "method": "get"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Successful",
+      "disabled": false,
+      "description": null,
+      "guid": "d1695d31976c0cef0fc3f75c00a01f0f",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "success",
+            "path": "<<get_photo.body.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Send Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "b724d60f33fdb6e17b6f9f6c88f88b64",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.postMessage",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<retrieve_photo.body.channel_id>>",
+          "blocks": [
+            {
+              "type": "image",
+              "image_url": "<<get_photo.body.message>>",
+              "alt_text": "woof"
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "button",
+                  "style": "primary",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Accept",
+                    "emoji": true
+                  },
+                  "value": "<<LOCAL |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_accept"
+                },
+                {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Shuffle",
+                    "emoji": true
+                  },
+                  "value": "<<LOCAL |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_shuffle"
+                },
+                {
+                  "type": "button",
+                  "style": "danger",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Cancel",
+                    "emoji": true
+                  },
+                  "value": "<<LOCAL |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_cancel"
+                }
+              ]
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        },
+        "local": {
+          "url": "<<build_url.url>>",
+          "breed": "<<retrieve_photo.body.text |>\nSPLIT(%, \" \")[0]>>",
+          "sub_breed": "<<retrieve_photo.body.text |>\nSPLIT(%, \" \")[1]>>",
+          "user_id": "<<retrieve_photo.body.user_id>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "Retrieve Breeds",
+      "disabled": false,
+      "description": null,
+      "guid": "33ea7445b52c9961bf2b60aaa35f4bc6",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "path": "4f2e6a0567dc2b28137548e712c0b35c",
+        "secret": "500a435dc7869a233edff380b21b0940",
+        "verbs": "get,post",
+        "response": ""
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::WebhookAgent",
+      "name": "Retrieve Sub-Breeds",
+      "disabled": false,
+      "description": null,
+      "guid": "13b4e07e9bf3c8518dc05379768d0ba8",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "path": "5106130e3d159a4ebea37ba6a938571c",
+        "secret": "5a3980f61d51b79d80a2cbd6b8e35198",
+        "verbs": "get,post",
+        "response": ""
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Get Breeds",
+      "disabled": false,
+      "description": null,
+      "guid": "32af25ef007222f51d2e3a9559dcc0d4",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "url": "https://dog.ceo/api/breeds/list/all",
+        "method": "get"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Successful",
+      "disabled": false,
+      "description": null,
+      "guid": "b8af12eb08eb4341e64e568cfc4a8f18",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "not formula",
+            "value": "foo",
+            "path": "=get_breeds.body.message |> IS_BLANK(%)"
+          },
+          {
+            "type": "field==value",
+            "value": "success",
+            "path": "<<get_breeds.body.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Send Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "9afbf625ea423eff0aab36dc032bfe9e",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.postMessage",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<retrieve_breeds.body.channel_id>>",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "><<get_breeds.body.message |> KEYS(%) |>\nMAP_LAMBDA(%, LAMBDA(item, CAPITALIZE(item))) |>\nJOIN(%, \", \")>>"
+              }
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Get Breeds",
+      "disabled": false,
+      "description": null,
+      "guid": "e9a8a2d1ea109d09808a597b5eae74de",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "url": "https://dog.ceo/api/breed/<<retrieve_sub_breeds.body.text |> DOWNCASE(%)>>/list",
+        "method": "get"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Successful",
+      "disabled": false,
+      "description": null,
+      "guid": "896ebeffb60aa747cb59b0144d83ad20",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "not formula",
+            "value": "foo",
+            "path": "=get_breeds.body.message |> IS_BLANK(%)"
+          },
+          {
+            "type": "field==value",
+            "value": "success",
+            "path": "<<get_breeds.body.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Send Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "832b788d0b7f786f0e59bc1ddc35057d",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.postMessage",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<retrieve_sub_breeds.body.channel_id>>",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "<<get_breeds.body.message |> MAP_LAMBDA(%, LAMBDA(item, CAPITALIZE(item))) |> \">\" & JOIN(%, \"\\n>\")>>"
+              }
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Send Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "ca7f9e23a4a896ab81fd7db3404e0936",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.postMessage",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<retrieve_sub_breeds.body.channel_id>>",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Rut-roh! Nothing found for that search. Try again?"
+              }
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Send Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "9bea05ce51b35ca9e53ee139259ab189",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.postMessage",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<retrieve_breeds.body.channel_id>>",
+          "blocks": [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": "Rut-roh! Nothing found for that search. Try again?"
+              }
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "Build URL",
+      "disabled": false,
+      "description": null,
+      "guid": "bd40e723ceea5bb16a74426e79b91689",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "url": "https://dog.ceo/api/<<LOCAL.uri |>\nREPLACE(%, \"//\", \"/\")>>"
+        },
+        "local": {
+          "breed": "=retrieve_photo.body.text |>\nSPLIT(%, \" \") |>\nSLICE(%, 0, 2) |>\nJOIN(%, \"/\") |>\nIF(IS_BLANK(%), %, % & \"/\") |>\nDOWNCASE(%)",
+          "resource": "<<IF(IS_BLANK(LOCAL.breed), \"breeds\", \"breed\") |> % & \"/\">>",
+          "images_resource": "<<IF(INCLUDES(LOCAL.resource, \"breeds\"), \"image\", \"images\")>>",
+          "uri": "<<LOCAL.resource>><<LOCAL.breed>><<LOCAL.images_resource>>/random"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Shuffle Dog Pic",
+      "disabled": false,
+      "description": null,
+      "guid": "7481b94d67ba9e08fa7a61180b5f1010",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "dog_pic_shuffle",
+            "path": "<<parse_payload.action_id>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::EventTransformationAgent",
+      "name": "Parse Payload",
+      "disabled": false,
+      "description": null,
+      "guid": "b93c69b6e781d6a1ec770a95067a3173",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "mode": "message_only",
+        "loop": false,
+        "payload": {
+          "payload": "=LOCAL.payload",
+          "action_value": "=LOCAL.payload.actions[0].value |> JSON_PARSE(%) |> JSON_PARSE(%)",
+          "action_id": "<<LOCAL.payload.actions[0].action_id>>"
+        },
+        "local": {
+          "payload": "=receive_slack_interactions.body.payload |> JSON_PARSE(%) |> JSON_PARSE(%)"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Accept Dog Pic",
+      "disabled": false,
+      "description": null,
+      "guid": "8bae2426a27fca88e97c84ef7180b724",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "dog_pic_accept",
+            "path": "<<parse_payload.action_id>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Cancel Dog Pic",
+      "disabled": false,
+      "description": null,
+      "guid": "4396d9bd210f920c1e593f020ed6ee72",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "dog_pic_cancel",
+            "path": "<<parse_payload.action_id>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Update Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "48663957f9921ae7fb9c31a61d76421d",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.update",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<parse_payload.payload.channel.id>>",
+          "ts": "<<parse_payload.payload.message.ts>>",
+          "blocks": [
+            {
+              "type": "image",
+              "image_url": "<<get_photo.body.message>>",
+              "alt_text": "woof"
+            },
+            {
+              "type": "actions",
+              "elements": [
+                {
+                  "type": "button",
+                  "style": "primary",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Accept",
+                    "emoji": true
+                  },
+                  "value": "<<parse_payload.action_value |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_accept"
+                },
+                {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Shuffle",
+                    "emoji": true
+                  },
+                  "value": "<<parse_payload.action_value |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_shuffle"
+                },
+                {
+                  "type": "button",
+                  "style": "danger",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Cancel",
+                    "emoji": true
+                  },
+                  "value": "<<parse_payload.action_value |> JSON(JSON(%))>>",
+                  "action_id": "dog_pic_cancel"
+                }
+              ]
+            }
+          ]
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Get Photo",
+      "disabled": false,
+      "description": null,
+      "guid": "2ae785ed7270e77a8e2c0e9a4bf10bb8",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "url": "<<parse_payload.action_value.url>>",
+        "method": "get"
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Successful",
+      "disabled": false,
+      "description": null,
+      "guid": "200276a08771845bf5ee49472901b18e",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "success",
+            "path": "<<get_photo.body.status>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Update Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "8edb37eaa37d7a5d9ba92c776e6abc40",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.update",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<parse_payload.payload.channel.id>>",
+          "ts": "<<parse_payload.payload.message.ts>>",
+          "blocks": "=LOCAL.blocks"
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        },
+        "local": {
+          "blocks": "=parse_payload.payload.message.blocks |> WHERE(%, \"type\", \"image\")"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::HTTPRequestAgent",
+      "name": "Delete Slack DM",
+      "disabled": false,
+      "description": null,
+      "guid": "0dc77243c1357e1c2482c07a34c48e80",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:9f14dfcd7d12904a7c5651dbe89b3389",
+      "options": {
+        "url": "https://slack.com/api/chat.delete",
+        "content_type": "application_json",
+        "method": "post",
+        "payload": {
+          "channel": "<<parse_payload.payload.channel.id>>",
+          "ts": "<<parse_payload.payload.message.ts>>"
+        },
+        "headers": {
+          "Authorization": "Bearer <<CREDENTIAL.slack_retriever>>"
+        }
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null,
+      "schedule": null
+    },
+    {
+      "type": "Agents::TriggerAgent",
+      "name": "Original User",
+      "disabled": false,
+      "description": null,
+      "guid": "f8e55e21f16814d8733916b86006c3f7",
+      "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+      "options": {
+        "rules": [
+          {
+            "type": "field==value",
+            "value": "<<parse_payload.payload.user.id>>",
+            "path": "<<parse_payload.action_value.user_id>>"
+          }
+        ]
+      },
+      "reporting": {
+        "time_saved_value": 0,
+        "time_saved_unit": "minutes"
+      },
+      "monitoring": {
+        "monitor_all_events": false,
+        "monitor_failures": false,
+        "monitor_no_events_emitted": null
+      },
+      "template": {
+        "created_from_template_guid": null,
+        "created_from_template_version": null
+      },
+      "visuals": {
+        "card_icon_image_contents": null,
+        "card_icon_image_filename": null,
+        "card_icon_name": null
+      },
+      "width": null
+    }
+  ],
+  "diagram_notes": [
+    {
+      "content": "# Receive Slack Interactions\n\nThe below chains are designed to receive payloads sent via button interactions. A user can shuffle the image, accept the received image, or cancel the request altogether if the so choose.\n\nWe also check to ensure the user clicking the button is the same user who made the original request.",
+      "position": [
+        0.0,
+        -105.0
+      ],
+      "guid": "dc0d78715dfd7b6163928df21994675c",
+      "width": 297
+    },
+    {
+      "content": "# Handle Photo Requests\n\nThis chain handles photo requests received from the /retrieve-photo command.",
+      "position": [
+        690.0,
+        -15.0
+      ],
+      "guid": "e1c5341abe5b7cfb8c194044f2b07128",
+      "width": null
+    },
+    {
+      "content": "# Handle Breeds Requests\n\nThis chain handles requests made using the /retrieve-breeds command.",
+      "position": [
+        1140.0,
+        -15.0
+      ],
+      "guid": "18fabfd92b2a38e8629f511c1dcf882f",
+      "width": null
+    },
+    {
+      "content": "# Handle Sub Breeds Requests\n\nThis chain handles requests made using the /retrieve-sub-breeds command.",
+      "position": [
+        1620.0,
+        -15.0
+      ],
+      "guid": "4eae460c02ef2e51cc05ce10fee69258",
+      "width": null
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "receiver": 17
+    },
+    {
+      "source": 1,
+      "receiver": 15
+    },
+    {
+      "source": 2,
+      "receiver": 3
+    },
+    {
+      "source": 3,
+      "receiver": 4
+    },
+    {
+      "source": 5,
+      "receiver": 7
+    },
+    {
+      "source": 6,
+      "receiver": 10
+    },
+    {
+      "source": 7,
+      "receiver": 8
+    },
+    {
+      "source": 8,
+      "receiver": 14,
+      "secondary": true
+    },
+    {
+      "source": 8,
+      "receiver": 9
+    },
+    {
+      "source": 10,
+      "receiver": 11
+    },
+    {
+      "source": 11,
+      "receiver": 13,
+      "secondary": true
+    },
+    {
+      "source": 11,
+      "receiver": 12
+    },
+    {
+      "source": 15,
+      "receiver": 2
+    },
+    {
+      "source": 16,
+      "receiver": 21
+    },
+    {
+      "source": 17,
+      "receiver": 25
+    },
+    {
+      "source": 18,
+      "receiver": 23
+    },
+    {
+      "source": 19,
+      "receiver": 24
+    },
+    {
+      "source": 21,
+      "receiver": 22
+    },
+    {
+      "source": 22,
+      "receiver": 20
+    },
+    {
+      "source": 25,
+      "receiver": 19
+    },
+    {
+      "source": 25,
+      "receiver": 16
+    },
+    {
+      "source": 25,
+      "receiver": 18
+    }
+  ],
+  "diagram_layout": "{\"a4955f4675b076a36d5bd4ba43677c49\":[0,90],\"fef08f75860305d91abfc2c4a1d16626\":[690,90],\"b1b62956b9d30854c63b02e70620b92e\":[690,330],\"d1695d31976c0cef0fc3f75c00a01f0f\":[690,450],\"b724d60f33fdb6e17b6f9f6c88f88b64\":[690,570],\"33ea7445b52c9961bf2b60aaa35f4bc6\":[1140,90],\"13b4e07e9bf3c8518dc05379768d0ba8\":[1620,90],\"32af25ef007222f51d2e3a9559dcc0d4\":[1140,210],\"b8af12eb08eb4341e64e568cfc4a8f18\":[1140,330],\"9afbf625ea423eff0aab36dc032bfe9e\":[1140,450],\"e9a8a2d1ea109d09808a597b5eae74de\":[1620,210],\"896ebeffb60aa747cb59b0144d83ad20\":[1620,330],\"832b788d0b7f786f0e59bc1ddc35057d\":[1620,450],\"ca7f9e23a4a896ab81fd7db3404e0936\":[1860,450],\"9bea05ce51b35ca9e53ee139259ab189\":[1380,450],\"bd40e723ceea5bb16a74426e79b91689\":[690,210],\"7481b94d67ba9e08fa7a61180b5f1010\":[255,450],\"b93c69b6e781d6a1ec770a95067a3173\":[0,210],\"8bae2426a27fca88e97c84ef7180b724\":[-255,450],\"4396d9bd210f920c1e593f020ed6ee72\":[0,450],\"48663957f9921ae7fb9c31a61d76421d\":[255,810],\"2ae785ed7270e77a8e2c0e9a4bf10bb8\":[255,570],\"200276a08771845bf5ee49472901b18e\":[255,690],\"8edb37eaa37d7a5d9ba92c776e6abc40\":[-255,570],\"0dc77243c1357e1c2482c07a34c48e80\":[0,570],\"f8e55e21f16814d8733916b86006c3f7\":[0,330]}",
+  "send_to_story_enabled": false,
+  "entry_agent_guid": null,
+  "exit_agent_guids": [],
+  "exit_agent_guid": null,
+  "api_entry_action_guids": [],
+  "api_exit_action_guids": [],
+  "keep_events_for": 604800,
+  "reporting_status": true,
+  "send_to_story_access": null,
+  "story_library_metadata": {
+    "tags": [
+      "Slack",
+      "dogs"
+    ]
+  },
+  "monitor_failures": false,
+  "send_to_stories": [],
+  "form": null,
+  "synchronous_webhooks_enabled": false,
+  "forms": [],
+  "pages": [],
+  "tags": [
+    {
+      "name": "dogs"
+    },
+    {
+      "name": "Slack"
+    }
+  ],
+  "time_saved_unit": "minutes",
+  "time_saved_value": 0,
+  "origin_story_identifier": "cloud:98bf19cf1391e1805daf0cbdc3239e4a:6169096c1f23582bc523560f0ca8a4d3",
+  "integration_product": null,
+  "integration_vendor": null,
+  "exported_at": "2023-11-26T16:13:23Z",
+  "icon": ":dog:",
+  "integrations": []
+}
